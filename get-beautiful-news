@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'nokogiri'
+require 'open-uri'
+require 'time'
+require 'fileutils'
+
+DIR = File.join(File.dirname(File.realdirpath(__FILE__)), 'images')
+DEBUG = false
+
+def items()
+  doc = Nokogiri::XML open('http://feeds.feedburner.com/beautifulnewsdaily')
+  items = doc.xpath('//item')
+  items.each do |item|
+    url = item.xpath('./enclosure')[0].attributes['url'].value
+    data = {
+      url: url,
+      filename: File.join(DIR, File.basename(url)),
+      title: item.xpath('./title').children[0].text,
+      description: item.xpath('./description').children[0].text,
+      date: Time.parse(item.xpath('./pubDate').children[0].text), }
+    yield data
+  end
+end
+
+def get_image(url)
+  return open(url).read
+rescue => e
+  STDERR.puts "#{url}: #{e}" if DEBUG
+  return nil
+end
+
+downloads = []
+
+items() do |item|
+  filename, url, date = item.fetch_values(:filename, :url, :date)
+  next if File.exists? filename
+  next unless data = get_image(url)
+  open(filename, 'w') { |fh| fh.write(data) }
+  FileUtils.touch filename, :mtime => date
+  downloads.push filename
+end
+
+downloads.each { |filename| `open #{filename}` }
