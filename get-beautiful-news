@@ -3,6 +3,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'time'
+require 'open3'
 require 'fileutils'
 
 DIR = File.join(File.dirname(File.realdirpath(__FILE__)), 'images')
@@ -41,4 +42,6 @@ items() do |item|
   downloads.push filename
 end
 
-downloads.each { |filename| `open #{filename}` }
+# don't open more than a week's worth
+
+Open3.popen2('open', *downloads[0..6])
