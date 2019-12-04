@@ -36,7 +36,7 @@ It will save images to the ``beautiful-news/images`` directory.
 
 ## Authors
 
-* **Randy FIscher**
+* **Randy Fischer**
 
 ## License
 
