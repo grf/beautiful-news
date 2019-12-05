@@ -24,9 +24,11 @@ command - on my Mac, this opens the ``Preview.app`` on the recently downloaded f
 Decide where you want the system to live.
 
 ```
-gem install nokogiri
-git clone
-ln -s beautiful-news/beautiful-news ~/bin/beautiful-news
+$ gem install nokogiri
+$ git clone
+$ ln -s beautiful-news/beautiful-news ~/bin/beautiful-news
+$ beautiful-news
+
 ```
 
 Images are saved to the ``beautiful-news/images`` directory.
