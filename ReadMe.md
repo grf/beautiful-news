@@ -12,16 +12,17 @@ each newly-downloaded image (to a maximum of a week's worth).
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running.
+These instructions will get you a copy of the project up and running. It assumes a Unix-like system.
 
 ### Prerequisites
 
-A working recentish version of ruby, and a shell-level ``open``
+A working recentish version of ruby, and, optionally, a shell-level ``open``
 command - on my Mac, this opens the ``Preview.app`` on the recently downloaded files.
+Edit the line ``DISPLAY_PROGRAM`` in the script ``beautiful-news`` to change it.
 
 ### Installing
 
-Decide where you want the system to live.
+Decide where you want the system to live, and change to the parent directory. Then:
 
 ```
 $ gem install nokogiri
