@@ -28,7 +28,6 @@ $ gem install nokogiri
 $ git clone
 $ ln -s beautiful-news/beautiful-news ~/bin/beautiful-news
 $ beautiful-news
-
 ```
 
 Images are saved to the ``beautiful-news/images`` directory.
