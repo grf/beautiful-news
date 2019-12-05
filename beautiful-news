@@ -7,7 +7,8 @@ require 'open3'
 require 'fileutils'
 
 # Change DISPLAY_PROGRAM to the name of a program on your system that
-# will display downloaded images. 'open' works for MacOS.
+# will display downloaded images from a supplied list of image
+# files. The 'open' program works for MacOS.
 
 DISPLAY_PROGRAM = 'open'
 IMAGES_DIRECTORY = File.join(File.dirname(File.realdirpath(__FILE__)), 'images')
@@ -47,6 +48,8 @@ rescue => e
   return nil
 end
 
+# main()
+
 downloads = []
 
 get_beautiful_news() do |news_item|
@@ -57,6 +60,8 @@ get_beautiful_news() do |news_item|
   FileUtils.touch filename, :mtime => date
   downloads.push filename
 end
+
+exit 0 if downloads.empty?
 
 if has_display_program? DISPLAY_PROGRAM
   Open3.popen2(DISPLAY_PROGRAM, *downloads[0..6])  # display a maximum of a week's worth of recent images..
