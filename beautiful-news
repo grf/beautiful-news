@@ -6,23 +6,39 @@ require 'time'
 require 'open3'
 require 'fileutils'
 
-DIR = File.join(File.dirname(File.realdirpath(__FILE__)), 'images')
+# Change DISPLAY_PROGRAM to the name of a program on your system that
+# will display downloaded images. 'open' works for MacOS.
+
+DISPLAY_PROGRAM = 'open'
+IMAGES_DIRECTORY = File.join(File.dirname(File.realdirpath(__FILE__)), 'images')
 DEBUG = false
 
-def items()
+# Grab the current RSS feed and yield records for all news items - { :url, :title, :filename, :description, :date }
+
+def get_beautiful_news()
   doc = Nokogiri::XML open('http://feeds.feedburner.com/beautifulnewsdaily')
   items = doc.xpath('//item')
   items.each do |item|
     url = item.xpath('./enclosure')[0].attributes['url'].value
     data = {
       url: url,
-      filename: File.join(DIR, File.basename(url)),
+      filename: File.join(IMAGES_DIRECTORY, File.basename(url)),
       title: item.xpath('./title').children[0].text,
       description: item.xpath('./description').children[0].text,
       date: Time.parse(item.xpath('./pubDate').children[0].text), }
     yield data
   end
 end
+
+
+def has_display_program?(name)
+  ENV['PATH'].split(':').each do |dir|
+    program = File.join(dir, name)
+    return true if File.exists?(program) and File.executable?(program)
+  end
+  return false
+end
+
 
 def get_image(url)
   return open(url).read
@@ -33,15 +49,17 @@ end
 
 downloads = []
 
-items() do |item|
-  filename, url, date = item.fetch_values(:filename, :url, :date)
+get_beautiful_news() do |news_item|
+  filename, url, date = news_item.fetch_values(:filename, :url, :date)
   next if File.exists? filename
-  next unless data = get_image(url)
-  open(filename, 'w') { |fh| fh.write(data) }
+  next unless image_data = get_image(url)
+  open(filename, 'w') { |fh| fh.write(image_data) }
   FileUtils.touch filename, :mtime => date
   downloads.push filename
 end
 
-# don't open more than a week's worth
-
-Open3.popen2('open', *downloads[0..6])
+if has_display_program? DISPLAY_PROGRAM
+  Open3.popen2(DISPLAY_PROGRAM, *downloads[0..6])  # display a maximum of a week's worth of recent images..
+else
+  puts 'Downloaded:', downloads.map { |name| "  #{File.basename name}"}
+end

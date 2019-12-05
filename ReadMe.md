@@ -21,13 +21,15 @@ command - on my Mac, this opens the ``Preview.app`` on the recently downloaded f
 
 ### Installing
 
+Decide where you want the system to live.
+
 ```
 gem install nokogiri
 git clone
-ln -s beautiful-news/get-beautiful-news ~/bin/beautiful-news
+ln -s beautiful-news/beautiful-news ~/bin/beautiful-news
 ```
 
-It will save images to the ``beautiful-news/images`` directory.
+Images are saved to the ``beautiful-news/images`` directory.
 
 ## Built With
 
@@ -40,4 +42,4 @@ It will save images to the ``beautiful-news/images`` directory.
 
 ## License
 
-This project is licensed under the MIT License.
+This project uses the Nietzsche license: everything is allowed.
