@@ -13,11 +13,12 @@ require 'fileutils'
 DISPLAY_PROGRAM = 'open'
 IMAGES_DIRECTORY = File.join(File.dirname(File.realdirpath(__FILE__)), 'images')
 DEBUG = false
+RSS_FEED = 'http://feeds.feedburner.com/beautifulnewsdaily'
 
-# Grab the current RSS feed and yield records for all news items - { :url, :title, :filename, :description, :date }
+# Grab the current RSS feed and yield records for each news item:  { :url, :title, :filename, :description, :date }
 
 def get_beautiful_news()
-  doc = Nokogiri::XML open('http://feeds.feedburner.com/beautifulnewsdaily')
+  doc = Nokogiri::XML open(RSS_FEED)
   items = doc.xpath('//item')
   items.each do |item|
     url = item.xpath('./enclosure')[0].attributes['url'].value
@@ -29,6 +30,9 @@ def get_beautiful_news()
       date: Time.parse(item.xpath('./pubDate').children[0].text), }
     yield data
   end
+rescue => e
+  STDERR.puts "fatal error parsing #{RSS_FEED}: #{e}"
+  exit -1
 end
 
 
